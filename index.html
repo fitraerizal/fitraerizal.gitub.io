@@ -1,98 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title></title>
-	<link rel="stylesheet" href="css/themes/default/jquery.mobile-1.4.5.min.css">
-	<script src="js/jquery.js"></script>
-	<script src="js/jquery.mobile-1.4.5.min.js"></script>
-	<link rel="stylesheet" href="style.css" type="text/css"/>
-	<script type="text/javascript" src="jquery.js"></script><!--jQuery-->
-	<script type="text/javascript" src="jalendar.js"></script>
-	<style type="text/css">
-	#content {
-		background-image: url('image/bg.jpg');
-		color: blue;
-	}	
-	.jalendar {
-		width: 100% !important;
-	}
-	#head {
-		background-color: yellow;
-		
-	}
-	#foot {
-
-		background-color: green;
-		color: white;
-		font-family: arial black;
-	}
-	</style>
-	
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deteksi Lokasi Anda</title>
 </head>
 <body>
-<div data-role="header" data-position="fixed" id="head">
-		<h1>
-			KALENDER <br> PENDIDIKAN 
-		</h1>
-		<a href="index.html" ><img src="image/sultra.PNG" width="30"></a>
-		<a href="libur.html" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-tag ui-btn-icon-notext">Tag</a>
-		
-</div>
-<div id="content">
-	<h3 align="center">PROPINSI SULAWESI TENGGARA</h3>
-	<div id="yourId" class="jalendar">
-		<div class="added-event" data-date="12-12-2016" data-title="Libur Nasional">
-		
-		</div>
-		<div class="added-event" data-date="25-12-2016" data-title="Hari Natal">		
-		</div>
-		<div class="added-event" data-date="26-12-2016" data-title="Libur Bersama Hari Natal"></div>
-		<div class="added-event" data-date="01-01-2017" data-title="Tahun Baru Masehi"></div>
-		<div class="added-event" data-date="02-01-2017" data-title="Cuti Bersama"></div>
-		<div class="added-event" data-date="28-01-2017" data-title="Tahun Baru Imlek"></div>
-		<div class="added-event" data-date="28-03-2017" data-title="Hari Raya Nyepi"></div>
-		<div class="added-event" data-date="14-04-2017" data-title="Jumat Agung"></div>
-		<div class="added-event" data-date="24-04-2017" data-title="Isra Miraj"></div>
-		<div class="added-event" data-date="01-05-2017" data-title="Hari Buruh"></div>
-		<div class="added-event" data-date="11-05-2017" data-title="Hari Raya Waisak"></div>
-		<div class="added-event" data-date="25-05-2017" data-title="Kenaikan Isa Almasih"></div>
-		<div class="added-event" data-date="01-06-2017" data-title="Hari Lahir Pancasila"></div>
-		<div class="added-event" data-date="25-06-2017" data-title="Hari Raya Idul Fitri"></div>
-		<div class="added-event" data-date="26-06-2017" data-title="Hari Raya Idul Fitri"></div>
-		<div class="added-event" data-date="27-07-2017" data-title="Cuti Bersama"></div>
-		<div class="added-event" data-date="28-07-2017" data-title="Cuti Bersama"></div>
-		<div class="added-event" data-date="29-07-2017" data-title="Cuti Bersama"></div>
-		<div class="added-event" data-date="30-07-2017" data-title="Cuti Bersama"></div>
-		<div class="added-event" data-date="17-08-2017" data-title="Hari Kemerdekaan"></div>
-		<div class="added-event" data-date="01-09-2017" data-title="Idul Adha"></div>
-		<div class="added-event" data-date="21-09-2017" data-title="Tahun Baru Hijriyah"></div>
-		<div class="added-event" data-date="01-12-2017" data-title="Maulid Nabi"></div>
-		<div class="added-event" data-date="25-12-2017" data-title="Hari Natal"></div>
-		<div class="added-event" data-date="26-12-2017" data-title="Cuti Bersama"></div>
-	</div>
-	<div>
+    <h1>Lokasi Anda Sekarang</h1>
+    <p id="location">Mendeteksi lokasi...</p>
+    <div id="map" style="width: 100%; height: 400px; margin-top: 20px;"></div>
 
-	<script type="text/javascript">
-		$('#yourId').jalendar({
-			color : 'green',
-			color2 : 'yellow',
-			dayColor : 'black',
-			todayColor : 'blue',
-			weekColor : 'red',
-			selectingBeforeToday: 'true',
-			selectingAfterToday : 'true',
+    <script>
+        // Periksa apakah Geolocation API didukung oleh browser
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
 
+                    console.log("Lokasi berhasil didapatkan:", position);
 
+                    // Tampilkan latitude dan longitude
+                    document.getElementById("location").innerText = `Latitude: ${latitude}, Longitude: ${longitude}`;
 
-			});
-	</script>
-	</div>
-</div>
-<div data-role="footer" data-position="fixed" id="foot">
-	<h3>Design By: <a href="rian.html"> Rianto</a> <br>2016</h3>
-</div>
+                    // Tampilkan peta menggunakan OpenStreetMap
+                    const map = L.map('map').setView([latitude, longitude], 15); // Zoom level 15
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 19,
+                        attribution: '© OpenStreetMap contributors'
+                    }).addTo(map);
+
+                    // Tambahkan marker untuk lokasi pengguna
+                    L.marker([latitude, longitude])
+                        .addTo(map)
+                        .bindPopup('Lokasi Anda Sekarang')
+                        .openPopup();
+                },
+                (error) => {
+                    // Error handling jika lokasi tidak bisa dideteksi
+                    let errorMessage = '';
+                    switch (error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMessage = "Izin lokasi ditolak.";
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMessage = "Lokasi tidak tersedia.";
+                            break;
+                        case error.TIMEOUT:
+                            errorMessage = "Permintaan lokasi waktu habis.";
+                            break;
+                        default:
+                            errorMessage = "Terjadi kesalahan tidak dikenal.";
+                    }
+                    document.getElementById("location").innerText = errorMessage;
+                }
+            );
+        } else {
+            document.getElementById("location").innerText = "Geolocation tidak didukung oleh browser Anda.";
+        }
+    </script>
+
+    <!-- Tambahkan OpenStreetMap CSS dan JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </body>
 </html>
